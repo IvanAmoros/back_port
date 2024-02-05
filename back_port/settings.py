@@ -23,9 +23,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0yzxq2qjg$+bok(72d9p)6p5nusd1=(t5wpo!=s8jj5z!rpsx5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+# Development settings
+if DEBUG:
+    HOST = '0.0.0.0'
+    PORT = 8000
+    ALLOWED_HOSTS.append(HOST)
+
+# Production settings
+else:
+    HOST = '0.0.0.0'
+    PORT = 80
+    
+# Set the host and port
+RUNSERVER_DEFAULT_ADDR = f'{HOST}:{PORT}'
 
 
 # Application definition
