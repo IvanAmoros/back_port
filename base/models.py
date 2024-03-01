@@ -1,5 +1,4 @@
 from django.db import models
-import json
 
 
 class TechnicalSkillCategory(models.Model):
@@ -40,12 +39,6 @@ class WorkExperience(models.Model):
 
 	def __str__(self):
 		return f"{self.position} at {self.company}"
-
-	def set_job_tasks(self, tasks):
-		self.job_tasks = json.dumps(tasks)
-
-	def get_job_tasks(self):
-		return json.loads(self.job_tasks)
 	
 
 class Studies(models.Model):

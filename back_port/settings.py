@@ -11,6 +11,24 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
+
+# Initialize environ
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Assuming your .env file is in the same directory as manage.py, one level above the settings.py
+# Adjust the path to where your .env file is located
+env_file = os.path.join(BASE_DIR, '.env')
+
+# Use the path to read .env
+environ.Env.read_env(env_file)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -72,7 +90,13 @@ REST_FRAMEWORK = {
 	'DEFAULT_AUTHENTICATION_CLASSES': (
 		'rest_framework_simplejwt.authentication.JWTAuthentication',
 	),
+	'DEFAULT_PERMISSION_CLASSES': (
+		'rest_framework.permissions.IsAuthenticated',
+	),
+	'DATE_INPUT_FORMATS': ['%d/%m/%Y'],
+	'DATE_FORMAT': '%d/%m/%Y',
 }
+
 
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -101,13 +125,23 @@ WSGI_APPLICATION = 'back_port.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.sqlite3',
+# 		'NAME': BASE_DIR / 'db.sqlite3',
+# 	}
+# }
+
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': BASE_DIR / 'db.sqlite3',
+		'ENGINE': 'django.db.backends.postgresql',
+		'NAME': env('DB_NAME'),
+		'USER': env('DB_USER'),
+		'PASSWORD': env('DB_PASSWORD'),
+		'HOST': env('DB_HOST'),
+		'PORT': env('DB_PORT'),
 	}
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -149,3 +183,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Date format
+DATE_INPUT_FORMATS = ['%d/%m/%Y']
+
+# Default date format to use in templates
+DATE_FORMAT = 'd/m/Y'
+
+# Datetime format to use in templates (if you also want to customize datetime)
+DATETIME_FORMAT = 'd/m/Y H:i'
