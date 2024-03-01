@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@18.208.223.228 << 'EOF'
+        ssh -o StrictHostKeyChecking=no ubuntu@18.208.223.228 << 'EOF'
         cd /back_port/
         git pull origin master
         source env/bin/activate
