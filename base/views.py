@@ -1,18 +1,9 @@
-from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
-import json
 from .models import TechnicalSkillCategory, TechnicalSkill, WorkExperience
 from rest_framework import permissions, status
-from rest_framework.decorators import permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer
@@ -21,13 +12,12 @@ from rest_framework.permissions import IsAdminUser, AllowAny
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-	def validate(self, attrs):
+	def validate(self, attrs) -> dict[str, str]:
 		data = super().validate(attrs)
-		# Add extra responses here, e.g. user information
 		data['username'] = self.user.username
 		data['email'] = self.user.email
-		# You can add more fields as needed
 		return data
+
 
 class MyTokenObtainPairView(TokenObtainPairView):
 	serializer_class = MyTokenObtainPairSerializer
