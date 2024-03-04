@@ -47,7 +47,8 @@ class Studies(models.Model):
 	to_date = models.DateField(null=True, blank=True)
 	current = models.BooleanField(default=False)
 	tittle = models.CharField(max_length=100)
-	# skills = models.ManyToManyField(TechnicalSkill)
+	description = models.CharField(max_length=200, null=True, blank=True)
+	skills = models.ManyToManyField(TechnicalSkill)
 
 	def __str__(self):
 		return f"{self.tittle} at {self.center}"
