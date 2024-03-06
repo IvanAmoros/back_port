@@ -33,7 +33,7 @@ class WorkExperience(models.Model):
 	current_work = models.BooleanField(default=False)
 	position = models.CharField(max_length=100)
 	job_tasks = models.JSONField()
-	skills = models.ManyToManyField(TechnicalSkill)
+	skills = models.ManyToManyField(TechnicalSkill, blank=True)
 	updated = models.DateTimeField(auto_now=True)
 	created = models.DateTimeField(auto_now_add=True)
 
