@@ -2,11 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .models import TechnicalSkillCategory, TechnicalSkill, WorkExperience
+from .models import TechnicalSkillCategory, TechnicalSkill, WorkExperience, Studies
 from rest_framework import permissions, status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer
+from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer, StudiesSerializer
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAdminUser, AllowAny
 
@@ -16,6 +16,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 		data = super().validate(attrs)
 		data['username'] = self.user.username
 		data['email'] = self.user.email
+		data['is_superuser'] = self.user.is_superuser
 		return data
 
 
@@ -40,7 +41,7 @@ class ValidateTokenView(APIView):
 
 
 class TechnicalSkillCategoryList(ListAPIView):
-	queryset = TechnicalSkillCategory.objects.all()
+	queryset = TechnicalSkillCategory.objects.all().order_by('id')
 	serializer_class = TechnicalSkillCategorySerializer
 	permission_classes = [AllowAny]
 
@@ -60,16 +61,22 @@ class TechnicalSkillCreate(CreateAPIView):
 class TechnicalSkillUpdate(RetrieveUpdateAPIView):
 	queryset = TechnicalSkill.objects.all()
 	serializer_class = TechnicalSkillSerializer
-	permission_classes = [IsAuthenticated, IsAdminUser]
+	permission_classes = [IsAdminUser]
 
 
 class TechnicalSkillCategoryUpdate(RetrieveUpdateAPIView):
 	queryset = TechnicalSkillCategory.objects.all()
 	serializer_class = TechnicalSkillCategorySerializer
-	permission_classes = [IsAuthenticated, IsAdminUser]
+	permission_classes = [IsAdminUser]
  
 
 class WorkExperienceList(ListAPIView):
 	queryset = WorkExperience.objects.all().order_by('-from_date')
 	serializer_class = WorkExperienceSerializer
+	permission_classes = [AllowAny]
+
+
+class StudiesList(ListAPIView):
+	queryset = Studies.objects.all().order_by('-from_date')
+	serializer_class = StudiesSerializer
 	permission_classes = [AllowAny]
