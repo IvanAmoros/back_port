@@ -13,11 +13,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import environ
 import os
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 # Initialize environ
 env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
+	# set casting, default value
+	DEBUG=(bool, False)
 )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -43,8 +44,7 @@ SECRET_KEY = 'django-insecure-0yzxq2qjg$+bok(72d9p)6p5nusd1=(t5wpo!=s8jj5z!rpsx5
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-DEBUG = os.environ.get('DJANGO_DEBUG')
-
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() in ['true', '1', 't']
 
 ALLOWED_HOSTS = ['*']
 
@@ -89,10 +89,13 @@ MIDDLEWARE = [
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if DEBUG:
+	DEFAULT_RENDERER_CLASSES = (JSONRenderer, BrowsableAPIRenderer)
+else:
+	DEFAULT_RENDERER_CLASSES = (JSONRenderer,)
+
 REST_FRAMEWORK = {
-	'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),
+	'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
 	'DEFAULT_AUTHENTICATION_CLASSES': (
 		'rest_framework_simplejwt.authentication.JWTAuthentication',
 	),
