@@ -92,13 +92,10 @@ MIDDLEWARE = [
 if DEBUG:
 	DEFAULT_RENDERER_CLASSES = (JSONRenderer, BrowsableAPIRenderer)
 else:
-	DEFAULT_RENDERER_CLASSES = (JSONRenderer,)
+	DEFAULT_RENDERER_CLASSES = (JSONRenderer)
 
 REST_FRAMEWORK = {
 	'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
-	'DEFAULT_AUTHENTICATION_CLASSES': (
-		'rest_framework_simplejwt.authentication.JWTAuthentication',
-	),
 	'DEFAULT_PERMISSION_CLASSES': (
 		'rest_framework.permissions.IsAuthenticated',
 	),
