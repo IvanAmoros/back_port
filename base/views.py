@@ -2,12 +2,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .models import TechnicalSkillCategory, TechnicalSkill, WorkExperience, Studies
+from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Studie
 from rest_framework import permissions, status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer, StudiesSerializer
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAPIView
+from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer, StudieSerializer, CommentSerializer
+from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAdminUser, AllowAny
 
 
@@ -76,7 +76,21 @@ class WorkExperienceList(ListAPIView):
 	permission_classes = [AllowAny]
 
 
-class StudiesList(ListAPIView):
-	queryset = Studies.objects.all().order_by('-from_date')
-	serializer_class = StudiesSerializer
+class StudieList(ListAPIView):
+	queryset = Studie.objects.all().order_by('-from_date')
+	serializer_class = StudieSerializer
 	permission_classes = [AllowAny]
+
+
+class CommentList(ListCreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated and self.request.user.is_superuser:
+            return Comment.objects.all().order_by('created')
+        else:
+            return Comment.objects.filter(accepted=True).order_by('created')
+
+    def perform_create(self, serializer):
+        serializer.save()
