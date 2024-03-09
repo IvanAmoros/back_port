@@ -1,14 +1,15 @@
+from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Studie
+from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer, StudieSerializer, CommentSerializer
+
+from rest_framework import status
+from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Studie
-from rest_framework import permissions, status
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer, StudieSerializer, CommentSerializer
-from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
