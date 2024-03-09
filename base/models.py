@@ -56,7 +56,7 @@ class WorkExperience(models.Model):
 		return f"{self.position} at {self.company}"
 	
 
-class Studies(models.Model):
+class Studie(models.Model):
 	center = models.CharField(max_length=100)
 	from_date = models.DateField()
 	to_date = models.DateField(null=True, blank=True)

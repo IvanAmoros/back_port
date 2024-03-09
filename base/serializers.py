@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Studies
+from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Studie
 
 
 class TechnicalSkillSerializer(serializers.ModelSerializer):
@@ -26,13 +26,13 @@ class WorkExperienceSerializer(serializers.ModelSerializer):
         fields = ['id', 'company', 'from_date', 'to_date', 'current_work', 'position', 'job_tasks', 'skills']
 
 
-class StudiesSerializer(serializers.ModelSerializer):
+class StudieSerializer(serializers.ModelSerializer):
     skills = TechnicalSkillSerializer(many=True, read_only=True)
     from_date = serializers.DateField(format="%d/%m/%Y", input_formats=['%d/%m/%Y',])
     to_date = serializers.DateField(format="%d/%m/%Y", input_formats=['%d/%m/%Y',], required=False, allow_null=True)
 
     class Meta:
-        model = Studies
+        model = Studie
         fields = ['id', 'center', 'from_date', 'to_date', 'current', 'tittle', 'description', 'skills']
 
 
