@@ -98,7 +98,10 @@ REST_FRAMEWORK = {
 
 # CORS Configuration
 # --------------------------------------
-CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:    
+	CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
 
 # Templates Configuration
 # --------------------------------------
