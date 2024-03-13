@@ -13,7 +13,7 @@ SECRET_KEY = env('SECRET_KEY', default='Optional_Default_Value_If_Not_Found')
 DEBUG = env.bool('DEBUG', default=False)
 ALLOWED_HOSTS = ['*'] if DEBUG else env.list('ALLOWED_HOSTS', default=[])
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
