@@ -91,7 +91,7 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/day',
+        'anon': '500/day',
         'user': '1000/day'
     },
 }
@@ -100,8 +100,8 @@ REST_FRAMEWORK = {
 # --------------------------------------
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
-else:    
-	CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
+else:
+    CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
 
 # Templates Configuration
 # --------------------------------------
@@ -128,5 +128,3 @@ ROOT_URLCONF = 'back_port.urls'
 # WSGI Configuration
 # --------------------------------------
 WSGI_APPLICATION = 'back_port.wsgi.application'
-
-
