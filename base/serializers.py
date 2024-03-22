@@ -40,10 +40,11 @@ class StudySerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     responses = serializers.SerializerMethodField()
     created = serializers.DateTimeField(format="%d/%m/%Y %H:%M", read_only=True)
+    user = serializers.StringRelatedField()
 
     class Meta:
         model = Comment
-        fields = ['id', 'name', 'text', 'accepted', 'web_url', 'linkedin_url', 'github_url', 'created', 'responses']
+        fields = ['id', 'user', 'text', 'accepted', 'web_url', 'linkedin_url', 'github_url', 'created', 'responses']
 
     def __init__(self, *args, **kwargs):
         super(CommentSerializer, self).__init__(*args, **kwargs)
@@ -55,7 +56,7 @@ class CommentSerializer(serializers.ModelSerializer):
             self.fields.pop('web_url', None)
             self.fields.pop('linkedin_url', None)
             self.fields.pop('github_url', None)
-            self.fields.pop('name', None)
+            self.fields.pop('user', None)
 
     def get_responses(self, obj):
         if obj.parent is None:  # Ensure only top-level comments have responses
@@ -66,8 +67,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ShallowCommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
     created = serializers.DateTimeField(format="%d/%m/%Y %H:%M", read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['id', 'name', 'text', 'accepted', 'web_url', 'linkedin_url', 'github_url', 'created']
+        fields = ['id', 'user', 'text', 'accepted', 'web_url', 'linkedin_url', 'github_url', 'created']
