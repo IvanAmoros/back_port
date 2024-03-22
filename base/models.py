@@ -1,8 +1,9 @@
 from django.db import models
+from django.conf import settings
 
 
 class Comment(models.Model):
-    name = models.CharField(max_length=20, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, related_name='comments')
     text = models.CharField(max_length=500)
     accepted = models.BooleanField(default=False)
     web_url = models.CharField(max_length=100, blank=True)
@@ -13,7 +14,8 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='responses', null=True, blank=True)
 
     def __str__(self):
-        return (self.name or "Anonymous") + ': ' + self.text
+        username = "Anonymous" if self.user is None else self.user.username
+        return f"{username}: {self.text}"
 
 
 class TechnicalSkillCategory(models.Model):
