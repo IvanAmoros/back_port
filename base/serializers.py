@@ -60,7 +60,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_responses(self, obj):
         if obj.parent is None:  # Ensure only top-level comments have responses
-            responses = obj.responses.all()
+            responses = obj.responses.filter(accepted=True)
             return ShallowCommentSerializer(responses, many=True, context=self.context).data
         else:
             return []
