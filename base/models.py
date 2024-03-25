@@ -29,7 +29,6 @@ class TechnicalSkillCategory(models.Model):
 
 class TechnicalSkill(models.Model):
     name = models.CharField(max_length=100)
-    rating = models.FloatField(default=0.0)
     category = models.ForeignKey(
         TechnicalSkillCategory,
         on_delete=models.CASCADE,
