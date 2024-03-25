@@ -6,7 +6,7 @@ from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperie
 class TechnicalSkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = TechnicalSkill
-        fields = ['id', 'name', 'rating', 'category']
+        fields = ['id', 'name']
 
 
 class TechnicalSkillCategorySerializer(serializers.ModelSerializer):
