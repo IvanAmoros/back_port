@@ -30,6 +30,9 @@ DATETIME_FORMAT = 'd/m/Y H:i'
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # Database Configuration
 # --------------------------------------
 DATABASES = {
