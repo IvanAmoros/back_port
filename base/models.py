@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 class Comment(models.Model):
@@ -29,6 +32,7 @@ class TechnicalSkillCategory(models.Model):
 
 class TechnicalSkill(models.Model):
     name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='tech_skill_logos/', null=True, blank=True)
     category = models.ForeignKey(
         TechnicalSkillCategory,
         on_delete=models.CASCADE,
@@ -38,6 +42,29 @@ class TechnicalSkill(models.Model):
     )
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        MAX_IMAGE_SIZE = 200
+
+        if self.pk:
+            try:
+                old_logo = TechnicalSkill.objects.get(pk=self.pk).logo
+                if old_logo.name and old_logo.name != self.logo.name and old_logo.name != 'default.jpg':
+                    old_logo.delete(save=False)
+            except TechnicalSkill.DoesNotExist:
+                pass
+
+        if self.logo and hasattr(self.logo, 'file'):
+            img = Image.open(self.logo)
+            if img.height > MAX_IMAGE_SIZE or img.width > MAX_IMAGE_SIZE:
+                img.thumbnail((MAX_IMAGE_SIZE, MAX_IMAGE_SIZE), Image.Resampling.LANCZOS)
+
+                thumb_io = BytesIO()
+                img.save(thumb_io, format=img.format, quality=85)
+                in_memory_file = InMemoryUploadedFile(thumb_io, None, self.logo.name, 'image/jpeg', thumb_io.tell(), None)
+                self.logo.save(self.logo.name, in_memory_file, save=False)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
