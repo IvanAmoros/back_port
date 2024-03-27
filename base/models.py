@@ -18,7 +18,7 @@ class Comment(models.Model):
 
     def __str__(self):
         username = "Anonymous" if self.user is None else self.user.username
-        return f"{username}: {self.text}"
+        return f"{self.accepted} - {username}: {self.text}"
 
 
 class TechnicalSkillCategory(models.Model):
