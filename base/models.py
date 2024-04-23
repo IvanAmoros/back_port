@@ -93,6 +93,41 @@ class Study(models.Model):
     tittle = models.CharField(max_length=100)
     description = models.CharField(max_length=200, null=True, blank=True)
     skills = models.ManyToManyField(TechnicalSkill, blank=True)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.tittle} at {self.center}"
+    
+
+class Project(models.Model):
+    title = models.CharField(max_length=100)
+    github_link = models.CharField(max_length=200)
+    description = models.CharField(max_length=1000)
+    skills = models.ManyToManyField(TechnicalSkill, blank=True)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title}"
+    
+
+class ProjectImage(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='project_images/')
+    caption = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return f"Image for {self.project.title} - {self.caption[:20]}"
+    
+    def save(self, *args, **kwargs):
+        try:
+            this = ProjectImage.objects.get(id=self.id)
+            if this.image != self.image:
+                this.image.delete(save=False)
+        except: pass
+        super(ProjectImage, self).save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        self.image.delete(save=False)
+        super(ProjectImage, self).delete(*args, **kwargs)
