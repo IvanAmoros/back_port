@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CommentList, TechnicalSkillCategoryList, WorkExperienceList, ValidateTokenView, TechnicalSkillCategoryCreate, TechnicalSkillCreate, TechnicalSkillUpdate, TechnicalSkillCategoryUpdate, StudyList
+from .views import CommentList, TechnicalSkillCategoryList, WorkExperienceList, ValidateTokenView, TechnicalSkillCategoryCreate, TechnicalSkillCreate, TechnicalSkillUpdate, TechnicalSkillCategoryUpdate, StudyList, ProjectList
 from .views import MyTokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -16,6 +16,8 @@ urlpatterns = [
 	path('studies/', StudyList.as_view()),
 
 	path('comments/', CommentList.as_view()),
+    
+	path('projects/', ProjectList.as_view()),
 
 	path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
 	path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
