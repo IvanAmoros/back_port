@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Study
+from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Study, Project, ProjectImage
 
 
 class TechnicalSkillSerializer(serializers.ModelSerializer):
@@ -40,11 +40,11 @@ class StudySerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     responses = serializers.SerializerMethodField()
     created = serializers.DateTimeField(format="%d/%m/%Y %H:%M", read_only=True)
-    user = serializers.StringRelatedField()
+    user_full_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'text', 'accepted', 'web_url', 'linkedin_url', 'github_url', 'created', 'responses']
+        fields = ['id', 'user_full_name', 'text', 'accepted', 'web_url', 'linkedin_url', 'github_url', 'created', 'responses']
 
     def __init__(self, *args, **kwargs):
         super(CommentSerializer, self).__init__(*args, **kwargs)
@@ -58,8 +58,13 @@ class CommentSerializer(serializers.ModelSerializer):
             self.fields.pop('github_url', None)
             self.fields.pop('user', None)
 
+    def get_user_full_name(self, obj):
+        if obj.user:
+            return f"{obj.user.first_name} {obj.user.last_name}"
+        return "Anonymous"
+
     def get_responses(self, obj):
-        if obj.parent is None:  # Ensure only top-level comments have responses
+        if obj.parent is None:
             responses = obj.responses.filter(accepted=True)
             return ShallowCommentSerializer(responses, many=True, context=self.context).data
         else:
@@ -67,9 +72,29 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ShallowCommentSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
+    user_full_name = serializers.SerializerMethodField()
     created = serializers.DateTimeField(format="%d/%m/%Y %H:%M", read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'text', 'accepted', 'web_url', 'linkedin_url', 'github_url', 'created']
+        fields = ['id', 'user_full_name', 'text', 'accepted', 'web_url', 'linkedin_url', 'github_url', 'created']
+
+    def get_user_full_name(self, obj):
+        if obj.user:
+            return f"{obj.user.first_name} {obj.user.last_name}"
+        return "Anonymous"
+
+
+class ProjectImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectImage
+        fields = ['id', 'image', 'caption']
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    skills = TechnicalSkillSerializer(many=True, read_only=True)
+    images = ProjectImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ['id', 'title', 'github_link', 'description', 'skills', 'images']

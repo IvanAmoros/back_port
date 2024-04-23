@@ -1,7 +1,3 @@
-from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Study
-from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer, \
-    StudySerializer, CommentSerializer
-
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,6 +7,11 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.exceptions import ValidationError
+
+from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Study, Project
+from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer, \
+    StudySerializer, CommentSerializer, ProjectSerializer
+
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -24,12 +25,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 def get(request):
     try:
-        # Assuming the token is already validated by IsAuthenticated permission
         user = request.user
         return Response({
             'username': user.username,
             'email': user.email,
-            # Add any other user details you want to return
         })
     except Exception as e:
         return Response({'error': 'Invalid token.'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -106,3 +105,9 @@ class CommentList(ListCreateAPIView):
                 raise ValidationError('Parent comment does not exist.')
 
         serializer.save()
+
+
+class ProjectList(ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    permission_classes = [AllowAny]
