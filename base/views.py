@@ -43,7 +43,7 @@ class ValidateTokenView(APIView):
 
 
 class TechnicalSkillCategoryList(ListAPIView):
-    queryset = TechnicalSkillCategory.objects.all().order_by('id')
+    queryset = TechnicalSkillCategory.objects.all().order_by('order_number')
     serializer_class = TechnicalSkillCategorySerializer
     permission_classes = [AllowAny]
 

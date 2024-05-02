@@ -23,6 +23,7 @@ class Comment(models.Model):
 
 class TechnicalSkillCategory(models.Model):
     name = models.CharField(max_length=100)
+    order_number = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
