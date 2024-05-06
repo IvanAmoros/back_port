@@ -88,13 +88,16 @@ class ShallowCommentSerializer(serializers.ModelSerializer):
 class ProjectImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectImage
-        fields = ['id', 'image', 'caption']
+        fields = ['id', 'image', 'caption', 'main_image']
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    skills = TechnicalSkillSerializer(many=True, read_only=True)
-    images = ProjectImageSerializer(many=True, read_only=True)
+    main_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
-        fields = ['id', 'title', 'github_link', 'description', 'skills', 'images']
+        fields = ['id', 'title', 'short_description', 'main_image']
+    
+    def get_main_image(self, obj):
+        main_image = obj.images.filter(main_image=True).first()
+        return ProjectImageSerializer(main_image).data if main_image else None
