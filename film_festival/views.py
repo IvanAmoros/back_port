@@ -63,8 +63,6 @@ class MarkAsWatched(APIView):
         if not film.watched:
             film.watched = True
             film.watched_date = timezone.now()
-            print(timezone.now())
-            print(film.watched_date)
             film.save()
             return Response({'status': 'Film marked as watched', 'watched_date': film.watched_date}, status=status.HTTP_200_OK)
         return Response({'error': 'Film already marked as watched'}, status=status.HTTP_400_BAD_REQUEST)
