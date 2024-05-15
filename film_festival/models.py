@@ -15,7 +15,7 @@ class Film(models.Model):
     actors = models.CharField(max_length=250, blank=True, null=True)
     imdb_rating = models.CharField(max_length=10, blank=True, null=True)
     imdb_votes = models.CharField(max_length=20, blank=True, null=True)
-    imdb_id = models.CharField(max_length=10, blank=True, null=True)
+    imdb_id = models.CharField(max_length=20, blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
