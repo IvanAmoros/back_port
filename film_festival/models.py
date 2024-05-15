@@ -11,7 +11,7 @@ class Film(models.Model):
     year = models.IntegerField(default=0)
     runtime = models.CharField(max_length=50, blank=True, null=True)
     genre = models.CharField(max_length=250, blank=True, null=True)
-    director = models.CharField(max_length=50, blank=True, null=True)
+    director = models.CharField(max_length=250, blank=True, null=True)
     actors = models.CharField(max_length=250, blank=True, null=True)
     imdb_rating = models.CharField(max_length=10, blank=True, null=True)
     imdb_votes = models.CharField(max_length=20, blank=True, null=True)
