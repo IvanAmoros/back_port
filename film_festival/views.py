@@ -20,6 +20,7 @@ class FilmsToWatchList(ListAPIView):
         return Film.objects.filter(watched=False).order_by('-up_votes')
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

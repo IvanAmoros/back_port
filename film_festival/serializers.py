@@ -5,7 +5,7 @@ from .models import Film, Rating
 class FilmToWatchSerializer(serializers.ModelSerializer):
     class  Meta:
         model = Film
-        fields = ['id', 'tittle', 'image', 'description', 'up_votes']
+        fields = ['id', 'tittle', 'image', 'description', 'up_votes', 'year', 'runtime', 'genre', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'imdb_id']
 
     def __init__(self, *args, **kwargs):
         super(FilmToWatchSerializer, self).__init__(*args, **kwargs)
@@ -29,7 +29,7 @@ class FilmWatchedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Film
-        fields = ['id', 'tittle', 'image', 'description', 'watched_date', 'average_rating', 'vote_count', 'ratings']
+        fields = ['id', 'tittle', 'image', 'description', 'watched_date', 'average_rating', 'vote_count', 'ratings', 'year', 'runtime', 'genre', 'director', 'actors', 'imdb_rating', 'imdb_votes']
 
     def get_vote_count(self, obj):
         return obj.ratings.count()
