@@ -5,14 +5,14 @@ from .models import Film, Rating
 class FilmToWatchSerializer(serializers.ModelSerializer):
     class  Meta:
         model = Film
-        fields = ['id', 'tittle', 'image', 'description', 'up_votes', 'year', 'runtime', 'genre', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'imdb_id']
+        fields = ['id', 'tittle', 'image', 'description', 'total_upvotes', 'year', 'runtime', 'genre', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'imdb_id']
 
     def __init__(self, *args, **kwargs):
         super(FilmToWatchSerializer, self).__init__(*args, **kwargs)
 
         request = self.context.get('request', None)
         if request and request.method == 'POST':
-            self.fields.pop('up_votes')
+            self.fields.pop('total_upvotes')
 
 
 class RatingSerializer(serializers.ModelSerializer):

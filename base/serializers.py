@@ -1,7 +1,38 @@
 from rest_framework import serializers
+from rest_framework import permissions, status
+from rest_framework.response import Response
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer, TokenObtainPairSerializer
 
 from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Study, Project, ProjectImage
 
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs) -> dict[str, str]:
+        data = super().validate(attrs)
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+        data['is_superuser'] = self.user.is_superuser
+        return data
+
+
+def get(request):
+    try:
+        user = request.user
+        return Response({
+            'username': user.username,
+            'email': user.email,
+        })
+    except Exception as e:
+        return Response({'error': 'Invalid token.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+class CustomTokenRefreshSerializer(TokenRefreshSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # Include the refresh token in the response
+        data['refresh'] = attrs['refresh']
+
+        return data
 
 class TechnicalSkillSerializer(serializers.ModelSerializer):
     class Meta:

@@ -7,31 +7,12 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Comment, TechnicalSkillCategory, TechnicalSkill, WorkExperience, Study, Project
 from .serializers import TechnicalSkillCategorySerializer, TechnicalSkillSerializer, WorkExperienceSerializer, \
-    StudySerializer, CommentSerializer, ProjectSerializer
-
-
-
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs) -> dict[str, str]:
-        data = super().validate(attrs)
-        data['username'] = self.user.username
-        data['email'] = self.user.email
-        data['is_superuser'] = self.user.is_superuser
-        return data
-
-
-def get(request):
-    try:
-        user = request.user
-        return Response({
-            'username': user.username,
-            'email': user.email,
-        })
-    except Exception as e:
-        return Response({'error': 'Invalid token.'}, status=status.HTTP_401_UNAUTHORIZED)
+    StudySerializer, CommentSerializer, ProjectSerializer, MyTokenObtainPairSerializer
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -39,7 +20,17 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class ValidateTokenView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({
+            'message': 'Token is valid',
+            'user': {
+                'username': request.user.username,
+                'email': request.user.email,
+                'is_superuser': request.user.is_superuser
+            }
+        }, status=status.HTTP_200_OK)
 
 
 class TechnicalSkillCategoryList(ListAPIView):

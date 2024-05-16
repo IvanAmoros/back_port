@@ -85,7 +85,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Django REST Framework Configuration
 # --------------------------------------
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     'DATE_INPUT_FORMATS': DATE_INPUT_FORMATS,
     'DATETIME_INPUT_FORMATS': DATETIME_INPUT_FORMATS,
     'DATE_FORMAT': DATE_FORMAT,
