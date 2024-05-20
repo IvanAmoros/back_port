@@ -16,15 +16,16 @@ class Film(models.Model):
     actors = models.CharField(max_length=250, blank=True, null=True)
     imdb_rating = models.CharField(max_length=10, blank=True, null=True)
     imdb_votes = models.CharField(max_length=20, blank=True, null=True)
-    imdb_id = models.CharField(max_length=20, blank=True, null=True)
+    imdb_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    proposed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='proposed_films')
 
 
     @property
     def average_rating(self):
         return self.ratings.filter(stars__isnull=False).aggregate(average=Avg('stars'))['average'] or 0
-    
+
     def __str__(self):
         return self.tittle
     

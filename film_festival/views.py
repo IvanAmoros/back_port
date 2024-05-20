@@ -5,26 +5,38 @@ from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from rest_framework import status
 from django.utils import timezone
+from django.db import IntegrityError
 
 from .models import Film, Rating, Upvote
 from .serializers import FilmToWatchSerializer, FilmWatchedSerializer, RatingSerializer
 
+
 class FilmsToWatchList(ListAPIView):
     serializer_class = FilmToWatchSerializer
-    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        elif self.request.method == 'POST':
+            self.permission_classes = [IsAuthenticated]
+        return super(FilmsToWatchList, self).get_permissions()
 
     def get_queryset(self):
-        """
-        This view should return a list of all the films that have not been watched yet.
-        """
         return Film.objects.filter(watched=False).order_by('-total_upvotes')
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            imdb_id = serializer.validated_data.get('imdb_id')
+            if not imdb_id:
+                return Response({'detail': 'The IMDb ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            if Film.objects.filter(imdb_id=imdb_id).exists():
+                return Response({'detail': 'This movie has already been proposed.'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                film = serializer.save(proposed_by=request.user)
+                return Response(FilmToWatchSerializer(film).data, status=status.HTTP_201_CREATED)
+            except IntegrityError:
+                return Response({'detail': 'This movie has already been proposed.'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -47,11 +59,30 @@ class RatingCreate(APIView):
 
         serializer = RatingSerializer(data=request.data)
         if serializer.is_valid():
-            print('POST')
             serializer.save(film=film, user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+class UserRatedFilmsList(ListAPIView):
+    serializer_class = FilmWatchedSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        rated_films_ids = Rating.objects.filter(user=user).values_list('film_id', flat=True)
+        return Film.objects.filter(id__in=rated_films_ids)
+    
+
+class UserUpvotedFilmsList(ListAPIView):
+    serializer_class = FilmToWatchSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        upvoted_films_ids = Upvote.objects.filter(user=user).values_list('film_id', flat=True)
+        return Film.objects.filter(id__in=upvoted_films_ids)
+
 
 class IncreaseUpVotes(APIView):
     permission_classes = [IsAuthenticated]
