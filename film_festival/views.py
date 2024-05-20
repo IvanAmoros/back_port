@@ -22,7 +22,7 @@ class FilmsToWatchList(ListAPIView):
         return super(FilmsToWatchList, self).get_permissions()
 
     def get_queryset(self):
-        return Film.objects.filter(watched=False).order_by('-total_upvotes')
+        return Film.objects.filter(watched=False).order_by('-total_upvotes', 'created')
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
