@@ -5,8 +5,12 @@ from film_festival.models import Film, Rating, Upvote
 class FilmAdmin(admin.ModelAdmin):
     list_display = ('tittle', 'watched', 'watched_date', 'total_upvotes')
     ordering = ('-watched', 'watched_date', '-total_upvotes')
-
 admin.site.register(Film, FilmAdmin)
 
-admin.site.register(Rating)
-admin.site.register(Upvote)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ('film', 'stars', 'user')
+admin.site.register(Rating, RatingAdmin)
+
+class UpvoteAdmin(admin.ModelAdmin):
+    list_display = ('film', 'user')
+admin.site.register(Upvote, UpvoteAdmin)
