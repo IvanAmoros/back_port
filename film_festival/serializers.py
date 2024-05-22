@@ -3,12 +3,20 @@ from rest_framework import serializers
 from .models import Film, Rating
 
 
+class UpvoteSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(source='user.username')
+    class Meta:
+        model = Rating
+        fields = ['id', 'user']
+
+
 class FilmToWatchSerializer(serializers.ModelSerializer):
     proposed_by = serializers.StringRelatedField(read_only=True)
+    upvotes = UpvoteSerializer(many=True, read_only=True)
 
     class Meta:
         model = Film
-        fields = ['id', 'tittle', 'image', 'description', 'total_upvotes', 'year', 'runtime', 'genre', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'imdb_id', 'proposed_by']
+        fields = ['id', 'tittle', 'image', 'description', 'total_upvotes', 'year', 'runtime', 'genre', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'imdb_id', 'proposed_by', 'upvotes']
 
     def validate_imdb_id(self, value):
         if not value:
