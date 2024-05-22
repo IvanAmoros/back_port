@@ -23,9 +23,10 @@ class FilmToWatchSerializer(serializers.ModelSerializer):
 
 
 class RatingSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(source='user.username')
     class Meta:
         model = Rating
-        fields = ['id', 'stars']
+        fields = ['id', 'stars', 'user']
 
 
 class FilmWatchedSerializer(serializers.ModelSerializer):
