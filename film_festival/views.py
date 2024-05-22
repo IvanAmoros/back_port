@@ -62,7 +62,7 @@ class RatingCreate(APIView):
             serializer.save(film=film, user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 class UserRatedFilmsList(ListAPIView):
     serializer_class = FilmWatchedSerializer
