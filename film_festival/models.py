@@ -2,6 +2,14 @@ from django.db import models
 from django.db.models import Avg
 from django.contrib.auth.models import User
 
+class Provider(models.Model):
+    name = models.CharField(max_length=100)
+    image_url = models.URLField(max_length=500)
+
+    def __str__(self):
+        return self.name
+    
+
 class Film(models.Model):
     tittle = models.CharField(max_length=250)
     image = models.CharField(max_length=250, null=True, blank=True)
@@ -20,6 +28,7 @@ class Film(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     proposed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='proposed_films')
+    providers = models.ManyToManyField(Provider, related_name='films')
 
 
     @property
@@ -28,6 +37,7 @@ class Film(models.Model):
 
     def __str__(self):
         return self.tittle
+    
     
 class Upvote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_upvotes')
