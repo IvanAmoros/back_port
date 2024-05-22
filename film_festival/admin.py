@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from film_festival.models import Film, Rating, Upvote
+from film_festival.models import Film, Rating, Upvote, Provider
 
 class FilmAdmin(admin.ModelAdmin):
     list_display = ('tittle', 'watched', 'watched_date', 'total_upvotes')
@@ -14,3 +14,5 @@ admin.site.register(Rating, RatingAdmin)
 class UpvoteAdmin(admin.ModelAdmin):
     list_display = ('film', 'user')
 admin.site.register(Upvote, UpvoteAdmin)
+
+admin.site.register(Provider)

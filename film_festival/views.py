@@ -7,7 +7,7 @@ from rest_framework import status
 from django.utils import timezone
 from django.db import IntegrityError
 
-from .models import Film, Rating, Upvote
+from .models import Film, Rating, Upvote, Provider
 from .serializers import FilmToWatchSerializer, FilmWatchedSerializer, RatingSerializer
 
 
@@ -34,17 +34,24 @@ class FilmsToWatchList(ListAPIView):
                 return Response({'detail': 'This movie has already been proposed.'}, status=status.HTTP_400_BAD_REQUEST)
             try:
                 film = serializer.save(proposed_by=request.user)
+                providers_data = request.data.get('providers', [])
+                for provider_data in providers_data:
+                    provider, created = Provider.objects.get_or_create(
+                        name=provider_data['name'],
+                        defaults={'image_url': provider_data['image_url']}
+                    )
+                    film.providers.add(provider)
                 return Response(FilmToWatchSerializer(film).data, status=status.HTTP_201_CREATED)
             except IntegrityError:
                 return Response({'detail': 'This movie has already been proposed.'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
 
 class FilmsWatchedList(ListAPIView):
     queryset = Film.objects.filter(watched=True)
     serializer_class = FilmWatchedSerializer
     permission_classes = [AllowAny]
-    
+
 
 class RatingCreate(APIView):
     permission_classes = [IsAuthenticated]
@@ -72,7 +79,7 @@ class UserRatedFilmsList(ListAPIView):
         user = self.request.user
         rated_films_ids = Rating.objects.filter(user=user).values_list('film_id', flat=True)
         return Film.objects.filter(id__in=rated_films_ids)
-    
+
 
 class UserUpvotedFilmsList(ListAPIView):
     serializer_class = FilmToWatchSerializer
@@ -91,20 +98,16 @@ class IncreaseUpVotes(APIView):
         user = request.user
         film = get_object_or_404(Film, pk=film_id)
 
-        # Check if the user has already upvoted the film
         if Upvote.objects.filter(user=user, film=film).exists():
             return Response({'detail': 'You have already upvoted this film.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create an upvote record
         Upvote.objects.create(user=user, film=film)
 
-        # Increase the total_upvotes count
         film.total_upvotes += 1
         film.save()
 
         return Response({'total_upvotes': film.total_upvotes}, status=status.HTTP_200_OK)
 
-    
 
 class MarkAsWatched(APIView):
     permission_classes = [IsAdminUser]
