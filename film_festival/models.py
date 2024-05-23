@@ -26,7 +26,7 @@ class Film(models.Model):
     total_upvotes = models.IntegerField(default=0)
     year = models.IntegerField(default=0)
     runtime = models.CharField(max_length=50, blank=True, null=True)
-    genre = models.CharField(max_length=250, blank=True, null=True)
+    genres = models.ManyToManyField(Genre, related_name='genres')
     director = models.CharField(max_length=250, blank=True, null=True)
     actors = models.CharField(max_length=250, blank=True, null=True)
     imdb_rating = models.CharField(max_length=10, blank=True, null=True)
@@ -36,8 +36,6 @@ class Film(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     proposed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='proposed_films')
     providers = models.ManyToManyField(Provider, related_name='films', blank=True)
-    genres = models.ManyToManyField(Genre, related_name='genres')
-
 
     @property
     def average_rating(self):
