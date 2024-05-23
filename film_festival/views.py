@@ -7,7 +7,7 @@ from rest_framework import status
 from django.utils import timezone
 from django.db import IntegrityError
 
-from .models import Film, Rating, Upvote, Provider
+from .models import Film, Rating, Upvote, Provider, Genre
 from .serializers import FilmToWatchSerializer, FilmWatchedSerializer, RatingSerializer
 
 
@@ -41,6 +41,10 @@ class FilmsToWatchList(ListAPIView):
                         defaults={'image_url': provider_data['image_url']}
                     )
                     film.providers.add(provider)
+                genres_data = request.data.get('genres', [])
+                for genre_name in genres_data:
+                    genre, created = Genre.objects.get_or_create(name=genre_name)
+                    film.genres.add(genre)
                 return Response(FilmToWatchSerializer(film).data, status=status.HTTP_201_CREATED)
             except IntegrityError:
                 return Response({'detail': 'This movie has already been proposed.'}, status=status.HTTP_400_BAD_REQUEST)
