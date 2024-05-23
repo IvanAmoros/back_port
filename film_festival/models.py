@@ -11,7 +11,7 @@ class Provider(models.Model):
     
 
 class Genre(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -35,7 +35,7 @@ class Film(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     proposed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='proposed_films')
-    providers = models.ManyToManyField(Provider, related_name='films')
+    providers = models.ManyToManyField(Provider, related_name='films', blank=True)
     genres = models.ManyToManyField(Genre, related_name='genres')
 
 
