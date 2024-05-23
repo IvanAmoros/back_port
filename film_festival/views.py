@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.db import IntegrityError
 
 from .models import Film, Rating, Upvote, Provider, Genre
-from .serializers import FilmToWatchSerializer, FilmWatchedSerializer, RatingSerializer
+from .serializers import FilmToWatchSerializer, FilmWatchedSerializer, RatingSerializer, GenreSerializer
 
 
 class FilmsToWatchList(ListAPIView):
@@ -22,7 +22,12 @@ class FilmsToWatchList(ListAPIView):
         return super(FilmsToWatchList, self).get_permissions()
 
     def get_queryset(self):
-        return Film.objects.filter(watched=False).order_by('-total_upvotes', 'created')
+        queryset = Film.objects.filter(watched=False).order_by('-total_upvotes', 'created')
+        genres = self.request.query_params.getlist('genres')
+        if genres:
+            genre_objects = Genre.objects.filter(name__in=genres)
+            queryset = queryset.filter(genres__in=genre_objects).distinct()
+        return queryset
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -54,6 +59,12 @@ class FilmsToWatchList(ListAPIView):
 class FilmsWatchedList(ListAPIView):
     queryset = Film.objects.filter(watched=True)
     serializer_class = FilmWatchedSerializer
+    permission_classes = [AllowAny]
+
+
+class GenreList(ListAPIView):
+    queryset = Genre.objects.filter().order_by('name')
+    serializer_class = GenreSerializer
     permission_classes = [AllowAny]
 
 
