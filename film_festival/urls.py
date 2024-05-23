@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import FilmsToWatchList, FilmsWatchedList, RatingCreate, IncreaseUpVotes, MarkAsWatched, UserRatedFilmsList, UserUpvotedFilmsList
+from .views import FilmsToWatchList, FilmsWatchedList, RatingCreate, IncreaseUpVotes, MarkAsWatched, UserRatedFilmsList, UserUpvotedFilmsList, GenreList
 
 
 urlpatterns = [
@@ -9,6 +9,8 @@ urlpatterns = [
 
     path('user-upvoted-films/', UserUpvotedFilmsList.as_view()),
     path('increase-up-votes/<int:film_id>/', IncreaseUpVotes.as_view()),
+
+    path('genres/', GenreList.as_view()),
 
     path('mark-as-watched/<int:film_id>/', MarkAsWatched.as_view()),
     
