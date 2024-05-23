@@ -30,7 +30,7 @@ class FilmToWatchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Film
-        fields = ['id', 'tittle', 'image', 'description', 'total_upvotes', 'year', 'runtime', 'genre', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'imdb_id', 'proposed_by', 'upvotes', 'providers', 'genres']
+        fields = ['id', 'tittle', 'image', 'description', 'total_upvotes', 'year', 'runtime', 'genres', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'imdb_id', 'proposed_by', 'upvotes', 'providers']
 
     def validate_imdb_id(self, value):
         if not value:
@@ -61,7 +61,7 @@ class FilmWatchedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Film
-        fields = ['id', 'tittle', 'image', 'description', 'watched_date', 'average_rating', 'vote_count', 'ratings', 'year', 'runtime', 'genre', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'providers', 'genres']
+        fields = ['id', 'tittle', 'image', 'description', 'watched_date', 'average_rating', 'vote_count', 'ratings', 'year', 'runtime', 'genres', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'providers']
 
     def get_vote_count(self, obj):
         return obj.ratings.count()
