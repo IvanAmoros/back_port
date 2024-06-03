@@ -11,6 +11,37 @@ from .models import Film, Rating, Upvote, Provider, Genre
 from .serializers import FilmToWatchSerializer, FilmWatchedSerializer, RatingSerializer, GenreSerializer
 
 
+class DeleteProposedFilm(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, film_id, format=None):
+        film = get_object_or_404(Film, pk=film_id)
+        if film.watched:
+            return Response({'detail': 'Film already marked as watched and cannot be deleted.'}, status=status.HTTP_400_BAD_REQUEST)
+        if film.proposed_by != request.user:
+            return Response({'detail': 'You do not have permission to delete this film.'}, status=status.HTTP_403_FORBIDDEN)
+        film.delete()
+        return Response({'detail': 'Film deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+    
+
+class DeleteVote(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, film_id, format=None):
+        user = request.user
+        film = get_object_or_404(Film, pk=film_id)
+        upvote = Upvote.objects.filter(user=user, film=film).first()
+
+        if not upvote:
+            return Response({'detail': 'You have not upvoted this film.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        upvote.delete()
+        film.total_upvotes -= 1
+        film.save()
+
+        return Response({'detail': 'Vote deleted successfully.'}, status=status.HTTP_200_OK)
+
+
 class FilmsToWatchList(ListAPIView):
     serializer_class = FilmToWatchSerializer
 
@@ -50,6 +81,9 @@ class FilmsToWatchList(ListAPIView):
                 for genre_name in genres_data:
                     genre, created = Genre.objects.get_or_create(name=genre_name)
                     film.genres.add(genre)
+                Upvote.objects.create(user=request.user, film=film)
+                film.total_upvotes += 1
+                film.save()
                 return Response(FilmToWatchSerializer(film).data, status=status.HTTP_201_CREATED)
             except IntegrityError:
                 return Response({'detail': 'This movie has already been proposed.'}, status=status.HTTP_400_BAD_REQUEST)
