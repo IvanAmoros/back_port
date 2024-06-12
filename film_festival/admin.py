@@ -3,7 +3,7 @@ from django.contrib import admin
 from film_festival.models import Film, Rating, Upvote, Provider, Genre
 
 class FilmAdmin(admin.ModelAdmin):
-    list_display = ('tittle', 'watched', 'watched_date', 'total_upvotes')
+    list_display = ('tittle', 'watched', 'watched_date', 'total_upvotes', 'proposed_by')
     ordering = ('-watched', 'watched_date', '-total_upvotes', 'created')
 admin.site.register(Film, FilmAdmin)
 
