@@ -91,7 +91,7 @@ class FilmsToWatchList(ListAPIView):
     
 
 class FilmsWatchedList(ListAPIView):
-    queryset = Film.objects.filter(watched=True)
+    queryset = Film.objects.filter(watched=True).order_by('-watched_date')
     serializer_class = FilmWatchedSerializer
     permission_classes = [AllowAny]
 
