@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy to my server
       run: |
-        ssh -o StrictHostKeyChecking=no iamoros@api.ivanamoros.com -p 2222 << 'EOF'
+        ssh -vvv -o StrictHostKeyChecking=no iamoros@api.ivanamoros.com -p 2222 << 'EOF'
         cd /home/iamoros/back_port/
         git pull origin master
         source /home/iamoros/env/bin/activate
