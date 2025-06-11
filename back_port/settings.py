@@ -4,6 +4,7 @@ import os
 
 FORCE_SCRIPT_NAME = '/api'
 USE_X_FORWARDED_HOST = True
+CSRF_TRUSTED_ORIGINS = ['https://api.ivanamoros.com']
 
 # Initialize environment variables
 env = environ.Env()
