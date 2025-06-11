@@ -2,6 +2,9 @@ from pathlib import Path
 import environ
 import os
 
+FORCE_SCRIPT_NAME = '/api'
+USE_X_FORWARDED_HOST = True
+
 # Initialize environment variables
 env = environ.Env()
 environ.Env.read_env(env_file=os.path.join(Path(__file__).resolve().parent.parent, '.env'))
@@ -27,11 +30,11 @@ DATETIME_FORMAT = 'd/m/Y H:i'
 
 # Static Files Configuration
 # --------------------------------------
-STATIC_URL = 'static/'
+STATIC_URL = '/api/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = '/api/media/'
 
 # Database Configuration
 # --------------------------------------
