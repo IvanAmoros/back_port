@@ -142,3 +142,7 @@ ROOT_URLCONF = 'back_port.urls'
 # WSGI Configuration
 # --------------------------------------
 WSGI_APPLICATION = 'back_port.wsgi.application'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'webmaster@localhost'
