@@ -1,25 +1,26 @@
 from rest_framework import serializers
 
-from .models import Film, Rating, Provider, Genre
+from .models import Film, Rating, Provider, Genre, Upvote
 
 
 class ProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Provider
-        fields = ['id', 'name', 'image_url']
-        
+        fields = ["id", "name", "image_url"]
+
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
 
 class UpvoteSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(source='user.username')
+    user = serializers.StringRelatedField(source="user.username")
+
     class Meta:
-        model = Rating
-        fields = ['id', 'user']
+        model = Upvote
+        fields = ["id", "user"]
 
 
 class FilmToWatchSerializer(serializers.ModelSerializer):
@@ -30,7 +31,24 @@ class FilmToWatchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Film
-        fields = ['id', 'tittle', 'image', 'description', 'total_upvotes', 'year', 'runtime', 'genres', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'imdb_id', 'proposed_by', 'upvotes', 'providers']
+        fields = [
+            "id",
+            "tittle",
+            "image",
+            "description",
+            "total_upvotes",
+            "year",
+            "runtime",
+            "genres",
+            "director",
+            "actors",
+            "imdb_rating",
+            "imdb_votes",
+            "imdb_id",
+            "proposed_by",
+            "upvotes",
+            "providers",
+        ]
 
     def validate_imdb_id(self, value):
         if not value:
@@ -39,29 +57,49 @@ class FilmToWatchSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super(FilmToWatchSerializer, self).__init__(*args, **kwargs)
-        request = self.context.get('request', None)
-        if request and request.method == 'POST':
-            self.fields.pop('total_upvotes')
+        request = self.context.get("request", None)
+        if request and request.method == "POST":
+            self.fields.pop("total_upvotes")
 
 
 class RatingSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(source='user.username')
+    user = serializers.StringRelatedField(source="user.username")
+
     class Meta:
         model = Rating
-        fields = ['id', 'stars', 'user']
+        fields = ["id", "stars", "user"]
 
 
 class FilmWatchedSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(read_only=True)
     ratings = RatingSerializer(many=True, read_only=True)
-    watched_date = serializers.DateField(format='%d/%m/%Y', default=None, allow_null=True)
+    watched_date = serializers.DateField(
+        format="%d/%m/%Y", default=None, allow_null=True
+    )
     vote_count = serializers.SerializerMethodField()
     providers = ProviderSerializer(many=True, read_only=True)
     genres = GenreSerializer(many=True, read_only=True)
 
     class Meta:
         model = Film
-        fields = ['id', 'tittle', 'image', 'description', 'watched_date', 'average_rating', 'vote_count', 'ratings', 'year', 'runtime', 'genres', 'director', 'actors', 'imdb_rating', 'imdb_votes', 'providers']
+        fields = [
+            "id",
+            "tittle",
+            "image",
+            "description",
+            "watched_date",
+            "average_rating",
+            "vote_count",
+            "ratings",
+            "year",
+            "runtime",
+            "genres",
+            "director",
+            "actors",
+            "imdb_rating",
+            "imdb_votes",
+            "providers",
+        ]
 
     def get_vote_count(self, obj):
         return obj.ratings.count()
